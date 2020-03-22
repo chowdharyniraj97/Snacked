@@ -53,7 +53,7 @@ class UI {
             </button>
           </div>
           <h3>${product.title}</h3>
-          <h4>${product.price}</h4>
+          <h4>$${product.price}</h4>
         </article>
           
           `;
@@ -62,7 +62,9 @@ class UI {
   }
 }
 
-class Storage {}
+class Storage {
+  static saveProducts(products) {}
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const ui = new UI();
