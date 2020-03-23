@@ -37,7 +37,7 @@ class UI {
   displayProducts(products) {
     let results = "";
     products.forEach(product => {
-      console.log("${product.image}");
+      //console.log("${product.image}");
       results += `
           <article class="product">
           <div class="img-container">
@@ -55,15 +55,34 @@ class UI {
           <h3>${product.title}</h3>
           <h4>$${product.price}</h4>
         </article>
-          
-          `;
+        `;
     });
     productsDOM.innerHTML = results;
+  }
+  getBagsButtons() {
+    const buttons = [...document.querySelectorAll(".bag-btn")]; //turn normal document from node to aarray using spread operator
+    //console.log(buttons);
+
+    buttons.forEach(button => {
+      let id = button.dataset.id;
+      let inCart = cart.find(item => item.id === id);
+      if (inCart) {
+        button.innerText = " In Cart";
+        button.disabled = true;
+      } else {
+        button.addEventListener("click", event => {
+          event.target.innerText = "In Cart";
+          event.target.disabled = true;
+        });
+      }
+    });
   }
 }
 
 class Storage {
-  static saveProducts(products) {}
+  static saveProducts(products) {
+    localStorage.setItem("products", JSON.stringify(products)); //adding data to local storage
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -71,5 +90,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const products = new Products();
 
   //get all products
-  products.getProducts().then(products => ui.displayProducts(products));
+  products
+    .getProducts()
+    .then(products => {
+      ui.displayProducts(products);
+      Storage.saveProducts(products);
+    })
+    .then(() => {
+      ui.getBagsButtons();
+    });
 });
