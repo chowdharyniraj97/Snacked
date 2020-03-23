@@ -13,7 +13,7 @@ const productsDOM = document.querySelector(".products-center");
 //cart
 
 let cart = [];
-
+let buttonDOM = [];
 class Products {
   async getProducts() {
     try {
@@ -62,26 +62,55 @@ class UI {
   getBagsButtons() {
     const buttons = [...document.querySelectorAll(".bag-btn")]; //turn normal document from node to aarray using spread operator
     //console.log(buttons);
-
+    buttonDOM = buttons;
     buttons.forEach(button => {
       let id = button.dataset.id;
       let inCart = cart.find(item => item.id === id);
       if (inCart) {
         button.innerText = " In Cart";
         button.disabled = true;
-      } else {
-        button.addEventListener("click", event => {
-          event.target.innerText = "In Cart";
-          event.target.disabled = true;
-        });
       }
+      button.addEventListener("click", event => {
+        event.target.innerText = "In Cart";
+        event.target.disabled = true;
+        //get prioduct from products
+        let cartItem = { ...Storage.getProducts(id), amount: 1 }; //get all properties of the objact and add new attribute to it i.e amount
+        //console.log(cartItem);
+        //add product to cart
+        cart = [...cart, cartItem];
+
+        //save cart in local storage
+        Storage.saveCart(cart);
+
+        //set cart
+        this.setCartValues(cart);
+      });
     });
+  }
+
+  setCartValues(cart) {
+    let tempTotal = 0;
+    let itemsTotal = 0;
+    cart.map(item => {
+      tempTotal += item.price * item.amount;
+      itemsTotal += item.amount;
+    });
+    cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
+    cartItems.innerText = itemsTotal;
+    console.log(cartItems);
   }
 }
 
 class Storage {
   static saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products)); //adding data to local storage
+  }
+  static getProducts(id) {
+    let products = JSON.parse(localStorage.getItem("products"));
+    return products.find(prod => prod.id === id);
+  }
+  static saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
   }
 }
 
