@@ -1,6 +1,6 @@
 //variables
 
-const cardBtn = document.querySelector(".card-btn");
+const cardBtn = document.querySelector(".cart-btn");
 const closecartbtn = document.querySelector(".close-cart");
 const clearCartBtn = document.querySelector(".clear-cart");
 const cartDom = document.querySelector(".cart");
@@ -129,6 +129,20 @@ class UI {
     cartOverlay.classList.add("transparentBcg");
     cartDom.classList.add("showCart");
   }
+  setupAPP() {
+    cart = Storage.getCart();
+    this.setCartValues(cart);
+    this.populateCart(cart);
+    cardBtn.addEventListener("click", this.showCart);
+    closecartbtn.addEventListener("click", this.hideCart);
+  }
+  populateCart(cart) {
+    cart.forEach(item => this.addCartItem(item));
+  }
+  hideCart() {
+    cartOverlay.classList.remove("transparentBcg");
+    cartDom.classList.remove("showCart");
+  }
 }
 
 class Storage {
@@ -142,12 +156,18 @@ class Storage {
   static saveCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
+  static getCart() {
+    return localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart"))
+      : [];
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const ui = new UI();
   const products = new Products();
-
+  //setup app
+  ui.setupAPP();
   //get all products
   products
     .getProducts()
