@@ -20,7 +20,7 @@ class Products {
       let result = await fetch("products.json");
       let data = await result.json();
       let products = data.items;
-      products = products.map(item => {
+      products = products.map((item) => {
         const { title, price } = item.fields;
         const { id } = item.sys;
         const image = item.fields.image.fields.file.url;
@@ -36,7 +36,7 @@ class Products {
 class UI {
   displayProducts(products) {
     let results = "";
-    products.forEach(product => {
+    products.forEach((product) => {
       //console.log("${product.image}");
       results += `
           <article class="product">
@@ -63,14 +63,14 @@ class UI {
     const buttons = [...document.querySelectorAll(".bag-btn")]; //turn normal document from node to aarray using spread operator
     //console.log(buttons);
     buttonDOM = buttons;
-    buttons.forEach(button => {
+    buttons.forEach((button) => {
       let id = button.dataset.id;
-      let inCart = cart.find(item => item.id === id);
+      let inCart = cart.find((item) => item.id === id);
       if (inCart) {
         button.innerText = " In Cart";
         button.disabled = true;
       }
-      button.addEventListener("click", event => {
+      button.addEventListener("click", (event) => {
         event.target.innerText = "In Cart";
         event.target.disabled = true;
         //get prioduct from products
@@ -97,7 +97,7 @@ class UI {
   setCartValues(cart) {
     let tempTotal = 0;
     let itemsTotal = 0;
-    cart.map(item => {
+    cart.map((item) => {
       tempTotal += item.price * item.amount;
       itemsTotal += item.amount;
     });
@@ -137,11 +137,36 @@ class UI {
     closecartbtn.addEventListener("click", this.hideCart);
   }
   populateCart(cart) {
-    cart.forEach(item => this.addCartItem(item));
+    cart.forEach((item) => this.addCartItem(item));
   }
   hideCart() {
     cartOverlay.classList.remove("transparentBcg");
     cartDom.classList.remove("showCart");
+  }
+  cartLogic() {
+    clearCartBtn.addEventListener("click", () => {
+      this.clearCart();
+    });
+  }
+
+  clearCart() {
+    let cartItems = cart.map((item) => item.id);
+    cartItems.forEach((id) => this.removeItem(id));
+    while (cartContent.children.length > 0) {
+      cartContent.removeChild(cartContent.children[0]);
+    }
+    this.hideCart();
+  }
+  removeItem(id) {
+    cart = cart.filter((item) => item.id !== id);
+    this.setCartValues(cart);
+    Storage.saveCart(cart);
+    let button = this.getSingleButton(id);
+    button.disabled = false;
+    button.innerHTML = `<i class="fa fa-shopping-cart">add to cart</i>`;
+  }
+  getSingleButton(id) {
+    return buttonDOM.find((button) => button.dataset.id === id);
   }
 }
 
@@ -151,7 +176,7 @@ class Storage {
   }
   static getProducts(id) {
     let products = JSON.parse(localStorage.getItem("products"));
-    return products.find(prod => prod.id === id);
+    return products.find((prod) => prod.id === id);
   }
   static saveCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -171,11 +196,12 @@ document.addEventListener("DOMContentLoaded", () => {
   //get all products
   products
     .getProducts()
-    .then(products => {
+    .then((products) => {
       ui.displayProducts(products);
       Storage.saveProducts(products);
     })
     .then(() => {
       ui.getBagsButtons();
+      ui.cartLogic();
     });
 });
