@@ -89,7 +89,7 @@ class UI {
         this.addCartItem(cartItem);
 
         //show Cart
-        this.showCart();
+        // this.showCart();
       });
     });
   }
