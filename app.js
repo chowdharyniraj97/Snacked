@@ -1,3 +1,10 @@
+const client = contentful.createClient({
+  // This is the space ID. A space is like a project folder in Contentful terms
+  space: "x6wk2ak88803",
+  // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
+  accessToken: "RCODkNS8gJa6AEk-T64u_rYY0E4csMwN_HAZcMfSKq0",
+});
+
 //variables
 
 const cardBtn = document.querySelector(".cart-btn");
@@ -10,6 +17,40 @@ const cartTotal = document.querySelector(".cart-total");
 const cartContent = document.querySelector(".cart-content");
 const productsDOM = document.querySelector(".products-center");
 
+//click Go
+var scrollY = 0;
+var distance = 10;
+var speed = 1000;
+
+function autoScrollTo(el) {
+  var currentY = window.pageYOffset;
+  var targetY = document.getElementById(el).offsetTop;
+  var bodyHeight = document.body.offsetHeight;
+  var yPos = currentY + window.innerHeight;
+  var animator = setTimeout("autoScrollTo('" + el + "')", 5);
+  if (yPos > bodyHeight) {
+    clearTimeout(animator);
+  } else {
+    if (currentY < targetY - distance) {
+      scrollY = currentY + distance;
+      window.scroll(0, scrollY);
+    } else {
+      clearTimeout(animator);
+    }
+  }
+}
+
+// function resetScroller(el) {
+//   var currentY = window.pageYOffset;
+//   var targetY = document.getElementById(el).offsetTop;
+//   var animator = setTimeout("resetScroller('" + el + "')", speed);
+//   if (currentY > targetY) {
+//     scrollY = currentY - distance;
+//     window.scroll(0, scrollY);
+//   } else {
+//     clearTimeout(animator);
+//   }
+// }
 //cart
 
 let cart = [];
@@ -17,9 +58,11 @@ let buttonDOM = [];
 class Products {
   async getProducts() {
     try {
-      let result = await fetch("products.json");
-      let data = await result.json();
-      let products = data.items;
+      let contentful = await client.getEntries({ content_type: "snacks" });
+
+      // let result = await fetch("products.json");
+      // let data = await result.json();
+      let products = contentful.items;
       products = products.map((item) => {
         const { title, price } = item.fields;
         const { id } = item.sys;

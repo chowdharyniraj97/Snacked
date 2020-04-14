@@ -33,13 +33,19 @@
     <header class="hero">
       <div class="banner">
         <h1 class="banner-title">Order Now</h1>
-        <button class="banner-btn">Click</button>
+        <button
+          onclick="return false;"
+          onmousedown="autoScrollTo('el')"
+          class="banner-btn"
+        >
+          Go
+        </button>
       </div>
     </header>
     <!-- end of banner -->
 
     <!-- start of product -->
-    <section class="prodcuts">
+    <section id="el" class="products">
       <div class="section-title">
         <h2>Our Products</h2>
       </div>
@@ -67,7 +73,7 @@
       </div>
     </div>
     <!-- end of cart -->
-
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
