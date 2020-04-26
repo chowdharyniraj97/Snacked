@@ -51,6 +51,16 @@ function autoScrollTo(el) {
 //     clearTimeout(animator);
 //   }
 // }
+
+function openSlideMenu() {
+  document.getElementById("side-menu").style.width = "250px";
+  // document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeSlideMenu() {
+  document.getElementById("side-menu").style.width = "0";
+  // document.getElementById("main").style.marginLeft = "0";
+}
 //cart
 
 let cart = [];
@@ -259,15 +269,6 @@ class Storage {
       ? JSON.parse(localStorage.getItem("cart"))
       : [];
   }
-}
-function openSlideMenu() {
-  document.getElementById("side-menu").style.width = "250px";
-  document.getElementById("main").style.marginLeft = "250px";
-}
-
-function closeSlideMenu() {
-  document.getElementById("side-menu").style.width = "0";
-  document.getElementById("main").style.marginLeft = "0";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
